@@ -105,6 +105,14 @@ class Runner
     private $withoutAnnotations = false;
 
     /**
+     * Should the parse prefer package annotations to namespaces for package
+     * names?
+     *
+     * @var boolean
+     */
+    private $preferPackageAnnotations = false;
+
+    /**
      * List of log identifiers and log files.
      *
      * @var array(string=>string)
@@ -208,6 +216,17 @@ class Runner
     }
 
     /**
+     * Should the parser prefer package annotations to namespaces for package
+     * names?
+     *
+     * @return void
+     */
+    public function setPreferPackageAnnotations()
+    {
+        $this->preferPackageAnnotations = true;
+    }
+
+    /**
      * Adds a logger to this runner.
      *
      * @param string $generatorId
@@ -275,6 +294,10 @@ class Runner
 
         if ($this->withoutAnnotations === true) {
             $engine->setWithoutAnnotations();
+        }
+
+        if ($this->preferPackageAnnotations === true) {
+            $engine->setPreferPackageAnnotations();
         }
 
         // Try to set all source directories.

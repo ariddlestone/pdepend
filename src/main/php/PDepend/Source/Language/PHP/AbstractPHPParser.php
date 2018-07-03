@@ -233,6 +233,14 @@ abstract class AbstractPHPParser
     private $ignoreAnnotations = false;
 
     /**
+     * If this property is set to <b>true</b> the parser will prefer the
+     * package annotation over the namespace to group elements in packages
+     *
+     * @var boolean
+     */
+    private $preferPackageAnnotation = false;
+
+    /**
      * Stack with all active token scopes.
      *
      * @var \PDepend\Source\Tokenizer\TokenStack
@@ -298,6 +306,17 @@ abstract class AbstractPHPParser
     public function setIgnoreAnnotations()
     {
         $this->ignoreAnnotations = true;
+    }
+
+    /**
+     * Sets the prefer package annotations flag. This means that the parser will
+     * prefer package annotations over namespaces for package names.
+     *
+     * @return void
+     */
+    public function setPreferPackageAnnotations()
+    {
+        $this->preferPackageAnnotation = true;
     }
 
     /**
@@ -3289,7 +3308,7 @@ abstract class AbstractPHPParser
 
     /**
      * This method parses class references in catch statement.
-     * 
+     *
      * @param \PDepend\Source\AST\ASTCatchStatement $stmt The owning catch statement.
      */
     protected function parseCatchExceptionClass(ASTCatchStatement $stmt)
@@ -3300,7 +3319,7 @@ abstract class AbstractPHPParser
             )
         );
     }
-    
+
     /**
      * This method parses a finally-statement.
      *
@@ -6577,6 +6596,11 @@ abstract class AbstractPHPParser
      */
     private function getNamespaceOrPackageName()
     {
+        if ($this->preferPackageAnnotation === true
+            && $this->packageName != Builder::DEFAULT_NAMESPACE
+        ) {
+            return $this->packageName;
+        }
         if ($this->namespaceName === null) {
             return $this->packageName;
         }

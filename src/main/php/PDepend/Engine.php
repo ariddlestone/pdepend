@@ -149,6 +149,14 @@ class Engine
     private $withoutAnnotations = false;
 
     /**
+     * Should the parse prefer package annotations to namespaces for package
+     * names?
+     *
+     * @var boolean
+     */
+    private $preferPackageAnnotations = false;
+
+    /**
      * List or registered listeners.
      *
      * @var \PDepend\ProcessListener[]
@@ -295,6 +303,17 @@ class Engine
     public function setWithoutAnnotations()
     {
         $this->withoutAnnotations = true;
+    }
+
+    /**
+     * Should the parse prefer package annotations over namespaces for package
+     * names?
+     *
+     * @return void
+     */
+    public function setPreferPackageAnnotations()
+    {
+        $this->preferPackageAnnotations = true;
     }
 
     /**
@@ -567,6 +586,11 @@ class Engine
             // Disable annotation parsing?
             if ($this->withoutAnnotations === true) {
                 $parser->setIgnoreAnnotations();
+            }
+
+            // Set prefer package annotation?
+            if ($this->preferPackageAnnotations === true) {
+                $parser->setPreferPackageAnnotations();
             }
 
             $this->fireStartFileParsing($tokenizer);
